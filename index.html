@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USG Report Analysis - Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-blue': '#00f3ff', 
+                        'neon-purple': '#bf00ff',
+                        'neon-green': '#39ff14',
+                        'dark-bg': '#0a0a0a',
+                        'dark-card': '#1a1a1a',
+                    },
+                    boxShadow: {
+                        'neon-blue': '0 0 20px #00f3ff40',
+                        'neon-purple': '0 0 20px #bf00ff40',
+                        'neon-green': '0 0 20px #39ff1440',
+                    },
+                    animation: {
+                        'pulse-neon': 'pulse-neon 2s ease-in-out infinite alternate',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        'pulse-neon': {
+                            '0%': { boxShadow: '0 0 20px #00f3ff40' },
+                            '100%': { boxShadow: '0 0 30px #00f3ff80, 0 0 40px #00f3ff60' }
+                        },
+                        'glow': {
+                            '0%': { textShadow: '0 0 10px #00f3ff' },
+                            '100%': { textShadow: '0 0 20px #00f3ff, 0 0 30px #00f3ff' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-border { background: linear-gradient(45deg, #00f3ff, #bf00ff, #39ff14); padding: 2px; border-radius: 12px; }
+        .gradient-border-content { background: #1a1a1a; border-radius: 10px; }
+        .file-input::-webkit-file-upload-button { display: none; }
+    </style>
+</head>
+<body class="bg-dark-bg min-h-screen font-sans">
+    <div class="fixed inset-0 opacity-10">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, #00f3ff 2px, transparent 2px), radial-gradient(circle at 75% 75%, #bf00ff 2px, transparent 2px); background-size: 50px 50px;"></div>
+    </div>
+
+    <header class="relative z-10 py-6 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 bg-dark-card border border-neon-blue/40 rounded-xl flex flex-col items-center justify-center text-white shadow-neon-blue">
+                        <!-- <span class="text-xs tracking-wide text-neon-blue">SISTec</span> -->
+                         <img src="logo ss.png" alt="ss" style="height: 100px;">
+                        <!-- <span class="text-sm font-semibold">E</span> -->
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-white">Anunetra | USG Analysis System</h1>
+                        <p class="text-neon-blue text-sm md:text-base">Powered by SISTec IoT Innovation Cell</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-2 bg-dark-card border border-gray-700 rounded-lg px-4 py-2">
+                        <span id="labelTeam" class="text-gray-400 text-sm">Team</span>
+                        <span class="text-white font-semibold">Anunetra</span>
+                    </div>
+                    <select id="languageSelector" class="bg-dark-card border border-gray-700 text-gray-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-blue/40">
+                        <option value="en">English</option>
+                    </select>
+                    <div class="text-neon-purple font-mono text-sm"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 id="heroTitle" class="text-4xl md:text-6xl font-bold text-white mb-6">
+                    Upload Your USG Report
+                </h2>
+                <p id="heroDescription" class="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto">
+                    Advanced AI-powered analysis system that processes ultrasound reports and provides structured insights for faster, more accurate medical diagnosis.
+                </p>
+            </div>
+
+            <div class="gradient-border mb-8">
+                <div class="gradient-border-content p-8">
+                    <form id="uploadForm" class="space-y-6">
+                        <div id="dropArea" class="border-2 border-dashed border-neon-blue/30 rounded-xl p-12 text-center hover:border-neon-blue/60 transition-colors duration-300 bg-dark-bg/50">
+                            <div class="mb-4">
+                                <svg class="mx-auto h-16 w-16 text-neon-blue animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                            </div>
+                            <h3 id="dropTitle" class="text-xl font-semibold text-white mb-2">Drop your USG report here</h3>
+                            <p id="dropSubtitle" class="text-gray-400 mb-4">or click to browse files</p>
+                            <input type="file" id="fileInput" class="hidden file-input" accept="image/*,.pdf" />
+                            <button type="button" onclick="document.getElementById('fileInput').click()" class="bg-gradient-to-r from-neon-blue to-neon-purple text-white px-8 py-3 rounded-lg font-semibold hover:shadow-neon-blue transition-all duration-300 transform hover:scale-105">
+                                <span id="browseButton">Browse Files</span>
+                            </button>
+                            <p id="supportedFormats" class="text-xs text-gray-500 mt-3">Supported formats: JPG, PNG, PDF (Max: 10MB)</p>
+                        </div>
+
+                        <div id="filePreview" class="hidden bg-dark-card rounded-lg p-6">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-neon-green/20 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-neon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-medium" id="fileName">Selected File</p>
+                                        <p class="text-gray-400 text-sm" id="fileSize">File size</p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="removeFile()" class="text-red-400 hover:text-red-300 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label id="patientNameLabel" class="block text-neon-blue font-medium mb-2">Patient Name</label>
+                                <input type="text" id="patientName" class="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300" placeholder="Enter patient name">
+                            </div>
+                            <div>
+                                <label id="patientIdLabel" class="block text-neon-blue font-medium mb-2">Patient ID</label>
+                                <input type="text" id="patientId" class="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300" placeholder="Enter patient ID">
+                            </div>
+                        </div>
+
+                        <div class="bg-dark-card rounded-lg p-6 border border-gray-700">
+                            <h4 id="analysisOptionsTitle" class="text-white font-semibold mb-4">Analysis Options</h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input id="optDetailed" type="checkbox" class="w-5 h-5 text-neon-blue bg-dark-bg border-gray-600 rounded focus:ring-neon-blue focus:ring-2">
+                                    <span id="optDetailedLabel" class="text-gray-300">Generate detailed medical summary</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input id="optExplain" type="checkbox" class="w-5 h-5 text-neon-blue bg-dark-bg border-gray-600 rounded focus:ring-neon-blue focus:ring-2">
+                                    <span id="optExplainLabel" class="text-gray-300">Include patient-friendly explanations</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input id="optAbnormal" type="checkbox" class="w-5 h-5 text-neon-blue bg-dark-bg border-gray-600 rounded focus:ring-neon-blue focus:ring-2">
+                                    <span id="optAbnormalLabel" class="text-gray-300">Flag potential abnormalities</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button id="analyzeBtn" type="submit" class="bg-gradient-to-r from-neon-purple to-neon-blue text-white px-12 py-4 rounded-lg font-semibold text-lg hover:shadow-neon-purple transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span class="flex items-center justify-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    <span id="analyzeButtonLabel">Analyze Report</span>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-dark-card rounded-lg p-6 border border-gray-700 hover:border-neon-blue/30 transition-colors duration-300">
+                    <div class="w-12 h-12 bg-neon-blue/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-neon-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 id="featureAiTitle" class="text-white font-semibold mb-2">AI-Powered Analysis</h3>
+                    <p id="featureAiDescription" class="text-gray-400 text-sm">Advanced machine learning algorithms process and interpret USG reports with high accuracy.</p>
+                </div>
+
+                <div class="bg-dark-card rounded-lg p-6 border border-gray-700 hover:border-neon-purple/30 transition-colors duration-300">
+                    <div class="w-12 h-12 bg-neon-purple/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-neon-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 id="featureFastTitle" class="text-white font-semibold mb-2">Fast Processing</h3>
+                    <p id="featureFastDescription" class="text-gray-400 text-sm">Get comprehensive analysis results within seconds, reducing diagnostic delays.</p>
+                </div>
+
+                <div class="bg-dark-card rounded-lg p-6 border border-gray-700 hover:border-neon-green/30 transition-colors duration-300">
+                    <div class="w-12 h-12 bg-neon-green/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-neon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 id="featureSecureTitle" class="text-white font-semibold mb-2">Secure & Reliable</h3>
+                    <p id="featureSecureDescription" class="text-gray-400 text-sm">HIPAA-compliant processing with end-to-end encryption for patient data protection.</p>
+                </div>
+            </div>
+
+            <div class="gradient-border mb-12" id="partnerHospitals">
+                <div class="gradient-border-content p-8">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                        <div>
+                            <h3 id="hospitalSectionTitle" class="text-3xl font-bold text-white">Available Hospitals in Bhopal</h3>
+                            <p id="hospitalSectionDescription" class="text-gray-400">Trusted facilities where you can book consultations and follow-up checks.</p>
+                        </div>
+                        <a href="#appointment" class="inline-flex items-center space-x-2 bg-gradient-to-r from-neon-blue to-neon-purple text-white px-5 py-3 rounded-lg font-medium hover:shadow-neon-blue transition-all duration-300">
+                            <span id="bookAppointmentLink">Book Appointment</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h6m0 0v6m0-6L10 16"></path></svg>
+                        </a>
+                    </div>
+                    <div id="hospitalList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Appointment Booking Section -->
+    <section id="appointment" class="relative z-10 px-4 pb-20">
+        <div class="max-w-4xl mx-auto">
+            <div class="gradient-border mb-8">
+                <div class="gradient-border-content p-8">
+                    <h3 id="appointmentTitle" class="text-3xl font-bold text-white mb-6">Book a Doctor Appointment</h3>
+                    <form id="appointmentForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label id="apptNameLabel" class="block text-neon-blue font-medium mb-2">Full Name</label>
+                            <input id="apptName" type="text" class="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300" placeholder="Enter your full name">
+                        </div>
+                        <div>
+                            <label id="apptEmailLabel" class="block text-neon-blue font-medium mb-2">Email</label>
+                            <input id="apptEmail" type="email" class="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300" placeholder="you@example.com">
+                        </div>
+                        <div>
+                            <label id="apptPhoneLabel" class="block text-neon-blue font-medium mb-2">Phone</label>
+                            <input id="apptPhone" type="tel" class="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300" placeholder="+91 98765 43210">
+                        </div>
+                        <div>
+                            <label id="apptDeptLabel" class="block text-neon-blue font-medium mb-2">Department</label>
+                            <select id="apptDept" class="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300">
+                                <option id="apptDeptPlaceholderOption" value="">Select department</option>
+                                <option>Radiology</option>
+                                <option>Obstetrics</option>
+                                <option>Gynecology</option>
+                                <option>Cardiology</option>
+                                <option>General Medicine</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label id="apptDateLabel" class="block text-neon-blue font-medium mb-2">Preferred Date</label>
+                            <input id="apptDate" type="date" class="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300">
+                        </div>
+                        <div>
+                            <label id="apptTimeLabel" class="block text-neon-blue font-medium mb-2">Preferred Time</label>
+                            <input id="apptTime" type="time" class="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label id="apptNotesLabel" class="block text-neon-blue font-medium mb-2">Reason / Notes</label>
+                            <textarea id="apptNotes" rows="4" class="w-full bg-dark-card border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300" placeholder="Briefly describe your concern"></textarea>
+                        </div>
+                        <div class="md:col-span-2 flex items-center justify-between">
+                            <p id="apptStatus" class="text-sm text-gray-400"></p>
+                            <button id="apptSubmit" type="submit" class="bg-gradient-to-r from-neon-purple to-neon-blue text-white px-8 py-3 rounded-lg font-semibold hover:shadow-neon-purple transition-all duration-300 transform hover:scale-105">
+                                Confirm Appointment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating AI Chatbot -->
+    <div id="chatbotRoot" class="fixed bottom-6 right-6 z-20">
+        <div id="chatbotPanel" class="hidden w-[22rem] md:w-[26rem] bg-dark-card border border-gray-700 rounded-xl shadow-neon-blue overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-neon-blue/10 to-neon-purple/10 border-b border-gray-700">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-md bg-gradient-to-r from-neon-blue to-neon-purple"></div>
+                    <div>
+                        <p id="chatbotTitle" class="text-white font-semibold leading-tight">AI Health Assistant</p>
+                        <p id="chatbotSubtitle" class="text-xs text-gray-400">Ask about reports, symptoms, or booking</p>
+                    </div>
+                </div>
+                <button id="chatbotClose" class="text-gray-400 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="chatbotMessages" class="h-72 overflow-y-auto px-4 py-3 space-y-3 bg-dark-bg/40"></div>
+            <div class="p-3 border-t border-gray-700 bg-dark-bg/60">
+                <div class="flex items-center space-x-2">
+                    <input id="chatbotInput" type="text" class="flex-1 bg-dark-card border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-neon-blue focus:outline-none" placeholder="Type your message...">
+                    <button id="chatbotSend" class="bg-gradient-to-r from-neon-blue to-neon-purple text-white px-4 py-2 rounded-lg font-medium"><span id="chatbotSendLabel">Send</span></button>
+                </div>
+            </div>
+        </div>
+        <button id="chatbotToggle" class="bg-gradient-to-r from-neon-blue to-neon-purple text-white rounded-full w-14 h-14 shadow-neon-blue flex items-center justify-center">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h6m1 8l-4-4H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2z"/></svg>
+        </button>
+    </div>
+
+    <script>
+        const LANG_KEY = 'anunetra-lang';
+        const languageSelector = document.getElementById('languageSelector');
+        const labelTeam = document.getElementById('labelTeam');
+        const heroTitle = document.getElementById('heroTitle');
+        const heroDescription = document.getElementById('heroDescription');
+        const dropTitle = document.getElementById('dropTitle');
+        const dropSubtitle = document.getElementById('dropSubtitle');
+        const browseButton = document.getElementById('browseButton');
+        const supportedFormats = document.getElementById('supportedFormats');
+        const patientNameLabel = document.getElementById('patientNameLabel');
+        const patientIdLabel = document.getElementById('patientIdLabel');
+        const analysisOptionsTitle = document.getElementById('analysisOptionsTitle');
+        const optDetailedLabel = document.getElementById('optDetailedLabel');
+        const optExplainLabel = document.getElementById('optExplainLabel');
+        const optAbnormalLabel = document.getElementById('optAbnormalLabel');
+        const analyzeButtonLabel = document.getElementById('analyzeButtonLabel');
+        const featureAiTitle = document.getElementById('featureAiTitle');
+        const featureAiDescription = document.getElementById('featureAiDescription');
+        const featureFastTitle = document.getElementById('featureFastTitle');
+        const featureFastDescription = document.getElementById('featureFastDescription');
+        const featureSecureTitle = document.getElementById('featureSecureTitle');
+        const featureSecureDescription = document.getElementById('featureSecureDescription');
+        const hospitalSectionTitle = document.getElementById('hospitalSectionTitle');
+        const hospitalSectionDescription = document.getElementById('hospitalSectionDescription');
+        const bookAppointmentLink = document.getElementById('bookAppointmentLink');
+        const appointmentTitle = document.getElementById('appointmentTitle');
+        const apptNameLabel = document.getElementById('apptNameLabel');
+        const apptEmailLabel = document.getElementById('apptEmailLabel');
+        const apptPhoneLabel = document.getElementById('apptPhoneLabel');
+        const apptDeptLabel = document.getElementById('apptDeptLabel');
+        const apptDateLabel = document.getElementById('apptDateLabel');
+        const apptTimeLabel = document.getElementById('apptTimeLabel');
+        const apptNotesLabel = document.getElementById('apptNotesLabel');
+        const apptSubmit = document.getElementById('apptSubmit');
+        const chatbotTitle = document.getElementById('chatbotTitle');
+        const chatbotSubtitle = document.getElementById('chatbotSubtitle');
+        const chatbotSendLabel = document.getElementById('chatbotSendLabel');
+
+        const patientNameInput = document.getElementById('patientName');
+        const patientIdInput = document.getElementById('patientId');
+        const apptNameInput = document.getElementById('apptName');
+        const apptEmailInput = document.getElementById('apptEmail');
+        const apptPhoneInput = document.getElementById('apptPhone');
+        const apptNotesInput = document.getElementById('apptNotes');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const apptDeptSelect = document.getElementById('apptDept');
+        const apptDeptPlaceholderOption = document.getElementById('apptDeptPlaceholderOption');
+
+        const fileInput = document.getElementById('fileInput');
+        const filePreview = document.getElementById('filePreview');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const dropArea = document.getElementById('dropArea');
+        const form = document.getElementById('uploadForm');
+        const hospitalList = document.getElementById('hospitalList');
+        const appointmentForm = document.getElementById('appointmentForm');
+        const apptStatus = document.getElementById('apptStatus');
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotPanel = document.getElementById('chatbotPanel');
+        const chatbotClose = document.getElementById('chatbotClose');
+        const chatbotSend = document.getElementById('chatbotSend');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+
+        const technicalTerms = ['USG', 'AI', 'HIPAA', 'Anunetra', 'SISTec', 'AIIMS'];
+
+        function preserveTechnicalTerms(text) {
+            if (typeof text !== 'string') return text;
+            return technicalTerms.reduce((acc, term) => acc.replace(new RegExp(term, 'gi'), term), text);
+        }
+
+        const translations = {
+            en: {
+                teamLabel: 'Team',
+                heroTitle: 'Upload Your USG Report',
+                heroDescription: 'Advanced AI-powered analysis system that processes ultrasound reports and provides structured insights for faster, more accurate medical diagnosis.',
+                dropTitle: 'Drop your USG report here',
+                dropSubtitle: 'or click to browse files',
+                browseButton: 'Browse Files',
+                supportedFormats: 'Supported formats: JPG, PNG, PDF (Max: 10MB)',
+                patientNameLabel: 'Patient Name',
+                patientNamePlaceholder: 'Enter patient name',
+                patientIdLabel: 'Patient ID',
+                patientIdPlaceholder: 'Enter patient ID',
+                analysisOptionsTitle: 'Analysis Options',
+                optDetailedLabel: 'Generate detailed medical summary',
+                optExplainLabel: 'Include patient-friendly explanations',
+                optAbnormalLabel: 'Flag potential abnormalities',
+                analyzeButtonLabel: 'Analyze Report',
+                featureAiTitle: 'AI-Powered Analysis',
+                featureAiDescription: 'Advanced machine learning algorithms process and interpret USG reports with high accuracy.',
+                featureFastTitle: 'Fast Processing',
+                featureFastDescription: 'Get comprehensive analysis results within seconds, reducing diagnostic delays.',
+                featureSecureTitle: 'Secure & Reliable',
+                featureSecureDescription: 'HIPAA-compliant processing with end-to-end encryption for patient data protection.',
+                hospitalSectionTitle: ' Hospitals in Bhopal',
+                hospitalSectionDescription: 'Trusted facilities where you can book consultations and follow-up checks.',
+                bookAppointmentLink: 'Book Appointment',
+                appointmentTitle: 'Book a Doctor Appointment',
+                apptNameLabel: 'Full Name',
+                apptNamePlaceholder: 'Enter your full name',
+                apptEmailLabel: 'Email',
+                apptEmailPlaceholder: 'you@example.com',
+                apptPhoneLabel: 'Phone',
+                apptPhonePlaceholder: '+91 98765 43210',
+                apptDeptLabel: 'Department',
+                apptDeptPlaceholder: 'Select department',
+                apptDateLabel: 'Preferred Date',
+                apptTimeLabel: 'Preferred Time',
+                apptNotesLabel: 'Reason / Notes',
+                apptNotesPlaceholder: 'Briefly describe your concern',
+                apptSubmit: 'Confirm Appointment',
+                chatbotTitle: 'AI Health Assistant',
+                chatbotSubtitle: 'Ask about reports, symptoms, or booking',
+                chatbotInputPlaceholder: 'Type your message...',
+                chatbotSendLabel: 'Send',
+                botWelcome: 'Hi! I’m the Anunetra AI assistant. I can help analyze USG reports, suggest Bhopal hospitals, and guide you for doctor appointments. How can I assist?',
+                botGreeting: 'Hello! I am the Anunetra AI assistant from SISTec-E. Ask me about USG analysis, appointments, or partner hospitals in Bhopal.',
+                botIdentity: 'We are Team Anunetra from the SISTec-E Innovation Cell, building an AI-powered assistant to make ultrasound (USG) analysis faster and more accessible.',
+                botUpload: 'To analyse a USG report, click the "Browse Files" button, select your report (PDF/JPG/PNG), fill patient details, choose options, and press "Analyze Report".',
+                botAppointment: 'Use the "Book a Doctor Appointment" form below. Enter your details, preferred department, date, and time. We will reach out to confirm.',
+                botReschedule: 'To change or cancel an appointment, submit a new request with updated details or contact the hospital directly using the numbers listed.',
+                botHospitalsIntro: 'Here are partner hospitals in Bhopal:',
+                botHospitalsHelp: 'Need help choosing one? Let me know.',
+                botTiming: 'Most partner hospitals operate 24×7 for emergencies. OPD consultations typically run 9 AM – 6 PM (Mon–Sat).',
+                botSupport: 'For support, reach our coordination desk at +91 755 123 4567 or email care@anunetra.ai.',
+                botThanks: 'You are welcome! Let me know if there is anything more you need.',
+                botEmergency: 'If this is an emergency, please call your local emergency number or visit the nearest hospital immediately. Stay safe!',
+                botFallback: 'I’m collecting your query. For now, you can ask about report uploads, appointments, or partner hospitals in Bhopal.',
+                botFileFormats: 'You can upload JPG, PNG, or PDF files up to 10MB. Clear scans help the AI give better insights.',
+                botAnalysisOptions: 'Select the analysis options to add a medical summary, patient-friendly notes, or highlight abnormalities in the report.',
+                botPrivacy: 'We keep patient data secure with encrypted processing and HIPAA-aligned practices. Only authorised staff can view uploaded reports.',
+                botTurnaround: 'Processing is fast — most reports are analysed within seconds after upload.',
+                botPreparation: 'Ensure the USG report image or PDF is clear and readable. Blurry images can affect analysis quality.',
+                botTeam: 'Team Anunetra works with healthcare mentors at SISTec to ensure clinical reliability of insights.',
+                botContactDoctor: 'For personalised medical advice, please consult your doctor or book an appointment with our partner hospitals.',
+                apptStatusRequired: 'Please fill all required fields.',
+                apptStatusSuccess: 'Appointment requested successfully. We will contact you to confirm.',
+                apptStatusError: 'Could not save appointment locally. Please try again.'
+            }
+        };
+
+        const textBindings = [
+            { element: labelTeam, key: 'teamLabel' },
+            { element: heroTitle, key: 'heroTitle', type: 'html' },
+            { element: heroDescription, key: 'heroDescription' },
+            { element: dropTitle, key: 'dropTitle' },
+            { element: dropSubtitle, key: 'dropSubtitle' },
+            { element: browseButton, key: 'browseButton' },
+            { element: supportedFormats, key: 'supportedFormats' },
+            { element: patientNameLabel, key: 'patientNameLabel' },
+            { element: patientIdLabel, key: 'patientIdLabel' },
+            { element: analysisOptionsTitle, key: 'analysisOptionsTitle' },
+            { element: optDetailedLabel, key: 'optDetailedLabel' },
+            { element: optExplainLabel, key: 'optExplainLabel' },
+            { element: optAbnormalLabel, key: 'optAbnormalLabel' },
+            { element: analyzeButtonLabel, key: 'analyzeButtonLabel' },
+            { element: featureAiTitle, key: 'featureAiTitle' },
+            { element: featureAiDescription, key: 'featureAiDescription' },
+            { element: featureFastTitle, key: 'featureFastTitle' },
+            { element: featureFastDescription, key: 'featureFastDescription' },
+            { element: featureSecureTitle, key: 'featureSecureTitle' },
+            { element: featureSecureDescription, key: 'featureSecureDescription' },
+            { element: hospitalSectionTitle, key: 'hospitalSectionTitle' },
+            { element: hospitalSectionDescription, key: 'hospitalSectionDescription' },
+            { element: bookAppointmentLink, key: 'bookAppointmentLink' },
+            { element: appointmentTitle, key: 'appointmentTitle' },
+            { element: apptNameLabel, key: 'apptNameLabel' },
+            { element: apptEmailLabel, key: 'apptEmailLabel' },
+            { element: apptPhoneLabel, key: 'apptPhoneLabel' },
+            { element: apptDeptLabel, key: 'apptDeptLabel' },
+            { element: apptDateLabel, key: 'apptDateLabel' },
+            { element: apptTimeLabel, key: 'apptTimeLabel' },
+            { element: apptNotesLabel, key: 'apptNotesLabel' },
+            { element: apptSubmit, key: 'apptSubmit' },
+            { element: chatbotTitle, key: 'chatbotTitle' },
+            { element: chatbotSubtitle, key: 'chatbotSubtitle' },
+            { element: chatbotSendLabel, key: 'chatbotSendLabel' }
+        ];
+
+        const placeholderBindings = [
+            { element: patientNameInput, key: 'patientNamePlaceholder' },
+            { element: patientIdInput, key: 'patientIdPlaceholder' },
+            { element: apptNameInput, key: 'apptNamePlaceholder' },
+            { element: apptEmailInput, key: 'apptEmailPlaceholder' },
+            { element: apptPhoneInput, key: 'apptPhonePlaceholder' },
+            { element: apptNotesInput, key: 'apptNotesPlaceholder' },
+            { element: chatbotInput, key: 'chatbotInputPlaceholder' }
+        ];
+
+        const optionBindings = [
+            { element: apptDeptPlaceholderOption, key: 'apptDeptPlaceholder' }
+        ];
+
+        let currentLang = localStorage.getItem(LANG_KEY) || 'en';
+        if (!translations[currentLang]) currentLang = 'en';
+
+        function t(key, lang = currentLang) {
+            return translations[lang]?.[key] ?? translations.en[key] ?? key;
+        }
+
+        function applyTranslations(lang) {
+            const nextLang = translations[lang] ? lang : 'en';
+            currentLang = nextLang;
+            document.documentElement.lang = nextLang === 'hi' ? 'hi' : 'en';
+
+            textBindings.forEach(({ element, key, type = 'text' }) => {
+                if (!element) return;
+                const value = preserveTechnicalTerms(t(key, nextLang));
+                if (type === 'html') {
+                    element.innerHTML = value;
+                } else {
+                    element.textContent = value;
+                }
+            });
+
+            placeholderBindings.forEach(({ element, key }) => {
+                if (!element) return;
+                element.setAttribute('placeholder', preserveTechnicalTerms(t(key, nextLang)));
+            });
+
+            optionBindings.forEach(({ element, key }) => {
+                if (!element) return;
+                element.textContent = preserveTechnicalTerms(t(key, nextLang));
+            });
+
+            if (languageSelector) {
+                languageSelector.value = nextLang;
+            }
+
+            localStorage.setItem(LANG_KEY, nextLang);
+        }
+
+        if (languageSelector) {
+            languageSelector.addEventListener('change', (event) => applyTranslations(event.target.value));
+        }
+
+        applyTranslations(currentLang);
+
+        const hospitals = [
+            {
+                name: 'Sagar Multispeciality Hospital Bhopal',
+                address: 'Narmadapuram Rd, near Shri Ram Colony, Shri Ram Colony, Bhopal',
+                contact: '+91 7880161616',
+                specialties: ['Ultrasound', 'Radiology', 'General Medicine']
+            },
+            {
+                name: 'AIIMS Bhopal Hospital Wing',
+                address: 'Saket Nagar, Bhopal',
+                contact: '+91 755 267 3100',
+                specialties: ['Obstetrics', 'Cardiology', 'Emergency Care']
+            },
+            {
+                name: 'Bansal Hospital',
+                address: 'Shahpura, Bhopal',
+                contact: '+91 755 408 6000',
+                specialties: ['Radiology', 'Gynecology', 'Emergency']
+            },
+            {
+                name: 'Chirayu Hospital',
+                address: 'Bairagarh, Near Bhopal Airport',
+                contact: '+91 755 667 1111',
+                specialties: ['Diagnostic Imaging', 'Critical Care', 'General Surgery']
+            }
+        ];
+
+        if (hospitalList) {
+            hospitalList.innerHTML = hospitals.map((hospital) => `
+                <div class="bg-dark-card border border-gray-700 rounded-xl p-6 hover:border-neon-blue/40 transition-colors duration-300">
+                    <h4 class="text-white text-xl font-semibold mb-2">${hospital.name}</h4>
+                    <p class="text-gray-400 text-sm mb-2">${hospital.address}</p>
+                    <p class="text-neon-blue text-sm mb-3">${hospital.contact}</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${hospital.specialties.map((item) => `<span class="text-xs bg-dark-bg border border-gray-700 text-gray-300 px-3 py-1 rounded-full">${item}</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) showPreview(file);
+            });
+        }
+
+        function removeFile() {
+            if (!fileInput) return;
+            fileInput.value = '';
+            if (filePreview) {
+                filePreview.classList.add('hidden');
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showPreview(file) {
+            if (!filePreview || !fileName || !fileSize) return;
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            filePreview.classList.remove('hidden');
+        }
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((name) => {
+            if (!dropArea) return;
+            dropArea.addEventListener(name, (e) => { e.preventDefault(); e.stopPropagation(); });
+        });
+
+        ['dragenter', 'dragover'].forEach((name) => {
+            if (!dropArea) return;
+            dropArea.addEventListener(name, () => dropArea.classList.add('border-neon-blue'));
+        });
+
+        ['dragleave', 'drop'].forEach((name) => {
+            if (!dropArea) return;
+            dropArea.addEventListener(name, () => dropArea.classList.remove('border-neon-blue'));
+        });
+
+        if (dropArea) {
+            dropArea.addEventListener('drop', (e) => {
+                const file = e.dataTransfer.files?.[0];
+                if (file) {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    if (fileInput) fileInput.files = dt.files;
+                    showPreview(file);
+                }
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                window.location.href = 'report.html';
+            });
+        }
+
+        if (appointmentForm) {
+            appointmentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = apptNameInput?.value.trim();
+                const email = apptEmailInput?.value.trim();
+                const phone = apptPhoneInput?.value.trim();
+                const dept = apptDeptSelect?.value.trim();
+                const date = document.getElementById('apptDate')?.value;
+                const time = document.getElementById('apptTime')?.value;
+                const notes = apptNotesInput?.value.trim();
+
+                if (!name || !email || !phone || !dept || !date || !time) {
+                    if (apptStatus) {
+                        apptStatus.textContent = t('apptStatusRequired');
+                        apptStatus.className = 'text-sm text-red-400';
+                    }
+                    return;
+                }
+
+                const booking = { name, email, phone, dept, date, time, notes, createdAt: new Date().toISOString() };
+                try {
+                    const existing = JSON.parse(localStorage.getItem('appointments') || '[]');
+                    existing.push(booking);
+                    localStorage.setItem('appointments', JSON.stringify(existing));
+                    if (apptStatus) {
+                        apptStatus.textContent = t('apptStatusSuccess');
+                        apptStatus.className = 'text-sm text-neon-green';
+                    }
+                    appointmentForm.reset();
+                } catch (err) {
+                    if (apptStatus) {
+                        apptStatus.textContent = t('apptStatusError');
+                        apptStatus.className = 'text-sm text-red-400';
+                    }
+                }
+            });
+        }
+
+        const knowledgeBase = [
+            { keywords: ['hello', 'hi', 'hey', 'namaste', 'good morning', 'good afternoon', 'good evening', 'नमस्ते', 'हैलो', 'हाय', 'शुभ प्रभात', 'शुभ अपराह्न', 'शुभ संध्या', 'नमस्कार'], responseKey: 'botGreeting' },
+            { keywords: ['who are you', 'about you', 'team', 'anunetra', 'sistec', 'innovation', 'कौन', 'टीम', 'अनुनेत्र', 'इनोवेशन', 'सिस्टेक'], responseKey: 'botIdentity' },
+            { keywords: ['upload', 'submit', 'analyse', 'analyze', 'report', 'browse files', 'अपलोड', 'सबमिट', 'रिपोर्ट', 'फाइल', 'ब्राउज़'], responseKey: 'botUpload' },
+            { keywords: ['appointment', 'book', 'schedule', 'slot', 'doctor', 'consult', 'अपॉइंटमेंट', 'बुक', 'शेड्यूल', 'डॉक्टर', 'सलाह'], responseKey: 'botAppointment' },
+            { keywords: ['reschedule', 'change time', 'change date', 'cancel', 'update appointment', 'रिस्केड्यूल', 'समय बदल', 'तारीख बदल', 'रद्द', 'अपडेट'], responseKey: 'botReschedule' },
+            {
+                keywords: ['hospital', 'bhopal', 'clinic', 'nearby', 'partner', 'अस्पताल', 'भोपाल', 'क्लिनिक', 'नज़दीक', 'पार्टनर'],
+                responder: (lang) => {
+                    const list = hospitals.map((h) => `• ${h.name} — ${h.address} (${h.contact})`).join('<br>');
+                    return `${t('botHospitalsIntro', lang)}<br>${list}<br>${t('botHospitalsHelp', lang)}`;
+                }
+            },
+            { keywords: ['timing', 'hours', 'opd', 'open', 'closing', 'समय', 'घंटे', 'ओपीडी', 'खुला', 'बंद'], responseKey: 'botTiming' },
+            { keywords: ['support', 'helpdesk', 'contact', 'phone', 'email', 'call', 'सपोर्ट', 'संपर्क', 'फोन', 'ईमेल', 'कॉल'], responseKey: 'botSupport' },
+            { keywords: ['thank', 'thanks', 'thank you', 'dhanyavad', 'shukriya', 'धन्यवाद', 'शुक्रिया'], responseKey: 'botThanks' },
+            { keywords: ['emergency', 'urgent', 'serious', 'pain', 'bleeding', 'accident', 'आपात', 'तत्काल', 'दर्द', 'खून', 'दुर्घटना'], responseKey: 'botEmergency' },
+            { keywords: ['format', 'pdf', 'jpg', 'png', 'size', 'limit', 'mb', 'फॉर्मेट', 'पीडीएफ', 'जेपीजी', 'फाइल साइज'], responseKey: 'botFileFormats' },
+            { keywords: ['option', 'summary', 'explain', 'abnormality', 'detailed', 'patient friendly', 'विकल्प', 'सारांश', 'समझाएं', 'असामान्यता'], responseKey: 'botAnalysisOptions' },
+            { keywords: ['secure', 'security', 'privacy', 'safe', 'hipaa', 'data', 'सुरक्षित', 'प्राइवेसी', 'डेटा', 'सुरक्षा'], responseKey: 'botPrivacy' },
+            { keywords: ['how long', 'processing time', 'fast', 'speed', 'time taken', 'कितना समय', 'प्रोसेसिंग', 'तेज़', 'गति'], responseKey: 'botTurnaround' },
+            { keywords: ['prepare', 'quality', 'clear', 'blurry', 'scan', 'image', 'तैयार', 'गुणवत्ता', 'स्पष्ट', 'धुंधला', 'स्कैन', 'इमेज'], responseKey: 'botPreparation' },
+            { keywords: ['mentor', 'faculty', 'team anunetra', 'support team', 'मेंटोर', 'फैकल्टी', 'टीम'], responseKey: 'botTeam' },
+            { keywords: ['doctor advice', 'consult doctor', 'medical advice', 'specialist', 'डॉक्टर सलाह', 'परामर्श', 'चिकित्सीय सलाह', 'विशेषज्ञ'], responseKey: 'botContactDoctor' }
+        ];
+
+        function keywordScore(text, keywords = []) {
+            let score = 0;
+            keywords.forEach((word) => {
+                if (!word) return;
+                if (text.includes(word)) {
+                    score += word.split(' ').length;
+                }
+            });
+            return score;
+        }
+
+        function getBotReply(rawText) {
+            const normalized = rawText.toLowerCase();
+            if (!normalized) return t('botFallback');
+
+            let bestEntry = null;
+            let bestScore = 0;
+
+            knowledgeBase.forEach((entry) => {
+                const score = keywordScore(normalized, entry.keywords);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestEntry = entry;
+                }
+            });
+
+            if (bestEntry && bestScore > 0) {
+                if (typeof bestEntry.responder === 'function') {
+                    return preserveTechnicalTerms(bestEntry.responder(currentLang));
+                }
+                return preserveTechnicalTerms(t(bestEntry.responseKey));
+            }
+
+            return preserveTechnicalTerms(t('botFallback'));
+        }
+
+        function appendMessage(content, from = 'bot') {
+            if (!chatbotMessages) return;
+            const wrap = document.createElement('div');
+            const bubble = document.createElement('div');
+
+            if (from === 'user') {
+                wrap.className = 'flex justify-end';
+                bubble.className = 'max-w-[80%] bg-neon-blue/20 border border-neon-blue/40 rounded-lg px-3 py-2 text-white text-sm';
+                bubble.textContent = content;
+            } else {
+                wrap.className = 'flex justify-start';
+                bubble.className = 'max-w-[80%] bg-dark-bg border border-gray-700 rounded-lg px-3 py-2 text-gray-200 text-sm';
+                bubble.innerHTML = content;
+            }
+
+            wrap.appendChild(bubble);
+            chatbotMessages.appendChild(wrap);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function sendChat() {
+            const text = chatbotInput?.value.trim();
+            if (!text) return;
+            appendMessage(text, 'user');
+            chatbotInput.value = '';
+            setTimeout(() => appendMessage(getBotReply(text), 'bot'), 300);
+        }
+
+        if (chatbotToggle) chatbotToggle.addEventListener('click', () => {
+            chatbotPanel?.classList.toggle('hidden');
+        });
+
+        if (chatbotClose) chatbotClose.addEventListener('click', () => chatbotPanel?.classList.add('hidden'));
+        if (chatbotSend) chatbotSend.addEventListener('click', sendChat);
+
+        if (chatbotInput) {
+            chatbotInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendChat();
+                }
+            });
+        }
+
+        appendMessage(t('botWelcome'), 'bot');
+    </script>
+</body>
+</html>
