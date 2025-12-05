@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USG Report - Results</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'neon-blue': '#00f3ff',
+            'neon-purple': '#bf00ff',
+            'neon-green': '#39ff14',
+            'dark-bg': '#0a0a0a',
+            'dark-card': '#1a1a1a',
+          },
+          boxShadow: {
+            'neon-blue': '0 0 20px #00f3ff40',
+            'neon-purple': '0 0 20px #bf00ff40',
+            'neon-green': '0 0 20px #39ff1440',
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    .gradient-border { background: linear-gradient(45deg, #00f3ff, #bf00ff, #39ff14); padding: 2px; border-radius: 12px; }
+    .gradient-border-content { background: #1a1a1a; border-radius: 10px; }
+    @media print {
+      body { background: white; }
+      .no-print { display: none !important; }
+      .gradient-border, .gradient-border-content { box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-dark-bg min-h-screen font-sans">
+  <header class="relative z-10 py-6 px-4 no-print">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-r from-neon-blue to-neon-purple rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-white">USG Analysis</h1>
+            <p class="text-neon-blue text-sm">AI-Powered Medical Imaging</p>
+          </div>
+        </div>
+        <div class="text-neon-purple font-mono text-sm">HT-01</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10 px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-3xl md:text-4xl font-bold text-white">Generated Report</h2>
+        <div class="flex items-center space-x-3 no-print">
+          <a href="index.html" class="px-4 py-2 rounded-lg border border-neon-blue/30 text-neon-blue hover:bg-neon-blue/10 transition">Upload another</a>
+          <button onclick="window.print()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-neon-blue to-neon-purple text-white hover:shadow-neon-purple transition">Print / Save PDF</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="md:col-span-2 gradient-border">
+          <div class="gradient-border-content p-6">
+            <h3 class="text-white font-semibold mb-4">Patient Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300" id="patientInfo">
+              <p><span class="text-neon-blue">Name:</span> John Doe</p>
+              <p><span class="text-neon-blue">Patient ID:</span> PID-2025-001</p>
+              <p><span class="text-neon-blue">Age/Gender:</span> 42 / M</p>
+              <p><span class="text-neon-blue">Date:</span> 06 Nov 2025</p>
+            </div>
+          </div>
+        </div>
+        <div class="gradient-border">
+          <div class="gradient-border-content p-6 h-full">
+            <h3 class="text-white font-semibold mb-4">Study Details</h3>
+            <ul class="text-gray-300 space-y-2" id="studyDetails">
+              <li>Modality: Ultrasound</li>
+              <li>Region: Abdomen</li>
+              <li>Source: Uploaded Image</li>
+              <li>Confidence: 92%</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="gradient-border mb-8">
+        <div class="gradient-border-content p-6">
+          <h3 class="text-white font-semibold mb-4">Key Findings</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="keyFindings">
+            <div class="bg-dark-bg/60 rounded-lg p-4 border border-gray-700">
+              <p class="text-gray-400 text-sm">Liver</p>
+              <p class="text-white font-medium">Mild hepatomegaly</p>
+            </div>
+            <div class="bg-dark-bg/60 rounded-lg p-4 border border-gray-700">
+              <p class="text-gray-400 text-sm">Gallbladder</p>
+              <p class="text-white font-medium">No cholelithiasis</p>
+            </div>
+            <div class="bg-dark-bg/60 rounded-lg p-4 border border-gray-700">
+              <p class="text-gray-400 text-sm">Kidneys</p>
+              <p class="text-white font-medium">Normal corticomedullary differentiation</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 gradient-border">
+          <div class="gradient-border-content p-6">
+            <h3 class="text-white font-semibold mb-4">Structured Summary</h3>
+            <div class="space-y-4 text-gray-300" id="structuredSummary">
+              <p><span class="text-neon-blue">Impression:</span> Findings suggest mild hepatic enlargement without focal lesions. Clinical correlation recommended.</p>
+              <p><span class="text-neon-blue">Abnormalities:</span> None critical detected; no stones; renal morphology within normal limits.</p>
+              <p><span class="text-neon-blue">Recommendations:</span> LFTs, lifestyle modifications, follow-up USG in 6 months if clinically indicated.</p>
+            </div>
+          </div>
+        </div>
+        <div class="gradient-border">
+          <div class="gradient-border-content p-6">
+            <h3 class="text-white font-semibold mb-4">Patient-Friendly Notes</h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-300" id="patientNotes">
+              <li>The liver is slightly larger than usual but no serious issues are seen.</li>
+              <li>No gallstones were found.</li>
+              <li>Kidneys appear healthy and functioning normally.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-3 no-print">
+        <button id="btnJson" class="px-4 py-2 rounded-lg border border-neon-blue/30 text-neon-blue hover:bg-neon-blue/10 transition">Download JSON</button>
+        <button id="btnPdf" class="px-4 py-2 rounded-lg border border-neon-purple/30 text-neon-purple hover:bg-neon-purple/10 transition">Download PDF</button>
+        <button id="btnShare" class="px-4 py-2 rounded-lg border border-neon-green/30 text-neon-green hover:bg-neon-green/10 transition">Share Secure Link</button>
+      </div>
+
+      <footer class="mt-12 text-center text-gray-500 text-sm">
+        <p>USG Report Analysis System • Built for HT-01</p>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    // Example of wiring localStorage data if backend sets it on upload
+    const dataRaw = localStorage.getItem('usgReport');
+    if (dataRaw) {
+      try {
+        const data = JSON.parse(dataRaw);
+        // Patient info
+        const p = document.getElementById('patientInfo');
+        p.innerHTML = `
+          <p><span class="text-neon-blue">Name:</span> ${data.patient?.name || 'N/A'}</p>
+          <p><span class="text-neon-blue">Patient ID:</span> ${data.patient?.id || 'N/A'}</p>
+          <p><span class="text-neon-blue">Age/Gender:</span> ${data.patient?.age || 'N/A'} / ${data.patient?.gender || 'N/A'}</p>
+          <p><span class="text-neon-blue">Date:</span> ${data.date || new Date().toLocaleDateString()}</p>
+        `;
+        // Study details
+        const s = document.getElementById('studyDetails');
+        s.innerHTML = `
+          <li>Modality: ${data.study?.modality || 'Ultrasound'}</li>
+          <li>Region: ${data.study?.region || 'Abdomen'}</li>
+          <li>Source: ${data.study?.source || 'Uploaded Image'}</li>
+          <li>Confidence: ${data.study?.confidence ? data.study.confidence + '%' : 'N/A'}</li>
+        `;
+        // Key findings
+        if (Array.isArray(data.findings) && data.findings.length) {
+          const k = document.getElementById('keyFindings');
+          k.innerHTML = data.findings.map(f => `
+            <div class="bg-dark-bg/60 rounded-lg p-4 border border-gray-700">
+              <p class="text-gray-400 text-sm">${f.section || 'Section'}</p>
+              <p class="text-white font-medium">${f.value || '—'}</p>
+            </div>
+          `).join('');
+        }
+        // Structured summary
+        if (data.summary) {
+          const sum = document.getElementById('structuredSummary');
+          sum.innerHTML = `
+            <p><span class="text-neon-blue">Impression:</span> ${data.summary.impression || '—'}</p>
+            <p><span class="text-neon-blue">Abnormalities:</span> ${data.summary.abnormalities || '—'}</p>
+            <p><span class="text-neon-blue">Recommendations:</span> ${data.summary.recommendations || '—'}</p>
+          `;
+        }
+        // Patient notes
+        if (Array.isArray(data.patientNotes) && data.patientNotes.length) {
+          document.getElementById('patientNotes').innerHTML = data.patientNotes.map(n => `<li>${n}</li>`).join('');
+        }
+      } catch(e) { console.warn('Invalid usgReport JSON'); }
+    }
+
+    // Download JSON
+    document.getElementById('btnJson').addEventListener('click', () => {
+      const data = localStorage.getItem('usgReport') || JSON.stringify({ note: 'Replace with backend JSON' }, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'usg_report.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Download PDF (uses print as simple fallback)
+    document.getElementById('btnPdf').addEventListener('click', () => window.print());
+
+    // Share Secure Link (placeholder)
+    document.getElementById('btnShare').addEventListener('click', async () => {
+      alert('Secure share link will be generated by backend.');
+    });
+  </script>
+</body>
+</html>
